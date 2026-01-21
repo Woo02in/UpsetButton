@@ -96,6 +96,13 @@ app.post('/api/login', (req, res) => {
   });
 });
 
+// 한국 시간 가져오기 함수
+const getKoreanTime = () => {
+  const now = new Date();
+  const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  return koreanTime.toISOString().replace('T', ' ').substring(0, 19);
+};
+
 // 버튼 클릭 기록
 app.post('/api/click', (req, res) => {
   const { user_name, reason } = req.body;
@@ -104,9 +111,11 @@ app.post('/api/click', (req, res) => {
     return res.status(400).json({ error: '사용자 이름이 필요합니다.' });
   }
 
+  const koreanTime = getKoreanTime();
+
   db.run(
-    'INSERT INTO clicks (user_name, reason) VALUES (?, ?)',
-    [user_name, reason || null],
+    'INSERT INTO clicks (user_name, reason, clicked_at) VALUES (?, ?, ?)',
+    [user_name, reason || null, koreanTime],
     function(err) {
       if (err) {
         return res.status(500).json({ error: '기록 실패' });
