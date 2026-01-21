@@ -14,18 +14,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 프로덕션 모드에서 React 빌드 파일 제공
-if (NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-  
-  // 모든 라우트를 React 앱으로 (API 제외)
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-    }
-  });
-}
-
 // 데이터베이스 초기화
 const db = new sqlite3.Database(path.join(__dirname, 'database.db'));
 
@@ -183,6 +171,18 @@ app.delete('/api/clicks/:id', (req, res) => {
     }
   );
 });
+
+// 프로덕션 모드에서 React 빌드 파일 제공 (모든 API 라우트 뒤에 위치)
+if (NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+  
+  // 모든 라우트를 React 앱으로 (API 제외)
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    }
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);
