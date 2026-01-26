@@ -120,7 +120,7 @@ function SidePanel({ isOpen, onClose, currentUser }) {
                         <div key={click.id} className="click-item">
                           <div className="click-header">
                             <span className="click-date">{formatDate(click.clicked_at)}</span>
-                            {currentUser && click.user_name === currentUser.name && (
+                            {currentUser && (click.user_name === currentUser.name || currentUser.name === '최우인') && (
                               <button
                                 className="delete-btn"
                                 onClick={() => handleDelete(click.id)}

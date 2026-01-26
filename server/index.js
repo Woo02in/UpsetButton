@@ -149,7 +149,7 @@ app.get('/api/clicks', (req, res) => {
   );
 });
 
-// 클릭 기록 삭제 (본인 기록만 삭제 가능, 최우인은 모든 기록 삭제 가능)
+// 클릭 기록 삭제 (본인 기록만 삭제 가능)
 app.delete('/api/clicks/:id', (req, res) => {
   const { id } = req.params;
   const { user_name } = req.body;
