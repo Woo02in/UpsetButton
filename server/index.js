@@ -149,7 +149,7 @@ app.get('/api/clicks', (req, res) => {
   );
 });
 
-// 클릭 기록 삭제 (본인 기록만 삭제 가능)
+// 클릭 기록 삭제 (본인 기록만 삭제 가능, 최우인은 모든 기록 삭제 가능)
 app.delete('/api/clicks/:id', (req, res) => {
   const { id } = req.params;
   const { user_name } = req.body;
@@ -158,7 +158,7 @@ app.delete('/api/clicks/:id', (req, res) => {
     return res.status(400).json({ error: '사용자 이름이 필요합니다.' });
   }
 
-  // 먼저 해당 기록이 존재하는지, 그리고 본인 기록인지 확인
+  // 먼저 해당 기록이 존재하는지 확인
   db.get(
     'SELECT * FROM clicks WHERE id = ?',
     [id],
@@ -171,8 +171,8 @@ app.delete('/api/clicks/:id', (req, res) => {
         return res.status(404).json({ error: '기록을 찾을 수 없습니다.' });
       }
 
-      // 본인 기록인지 확인
-      if (click.user_name !== user_name) {
+      // 최우인은 모든 기록 삭제 가능, 다른 사용자는 본인 기록만 삭제 가능
+      if (user_name !== '최우인' && click.user_name !== user_name) {
         return res.status(403).json({ error: '본인의 기록만 삭제할 수 있습니다.' });
       }
 
