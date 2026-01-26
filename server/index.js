@@ -99,8 +99,18 @@ app.post('/api/login', (req, res) => {
 // 한국 시간 가져오기 함수
 const getKoreanTime = () => {
   const now = new Date();
-  const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-  return koreanTime.toISOString().replace('T', ' ').substring(0, 19);
+  // UTC 시간을 한국 시간(UTC+9)으로 변환
+  const koreanTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  
+  // YYYY-MM-DD HH:mm:ss 형식으로 변환
+  const year = koreanTime.getUTCFullYear();
+  const month = String(koreanTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(koreanTime.getUTCDate()).padStart(2, '0');
+  const hours = String(koreanTime.getUTCHours()).padStart(2, '0');
+  const minutes = String(koreanTime.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(koreanTime.getUTCSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
 // 버튼 클릭 기록
